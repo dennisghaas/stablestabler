@@ -43,11 +43,15 @@
 <body>
 
 <script type="text/javascript">
+    const width = window.innerWidth;
+    const height = window.innerHeight;
 
-    var config = {
+    const centerX = width * 0.5;
+
+    const config = {
         type: Phaser.AUTO,
-        width: 1000,
-        height: 600,
+        width: width,
+        height: height,
         physics: {
         default: 'matter',
         matter: {
@@ -70,12 +74,12 @@
     let crane
     let craneSpeed = 0.02; // pixels per frame
     time = 0;
-    let craneDirection = 1; // 1 for right, -1 for left
 
     let ground
 
     function preload ()
     {
+      //Load assets
       this.load.image('crane', 'assets/png/crane.png');
 
       this.load.on('loaderror', function (file) {
@@ -85,24 +89,22 @@
 
     function create ()
     {
-      crane = this.matter.add.image(350, 34, 'crane');
+      //Set World boundaries
+      this.matter.world.setBounds(0, 0, width, height);
+
+      //Create crane
+      crane = this.matter.add.image(centerX, 34, 'crane');
       crane.setStatic(true)
     }
 
     function update ()
     {
-
-      /* crane.x += craneSpeed * craneDirection;
-    
-    // Reverse direction when hitting edges
-    if (crane.x >= 750 || crane.x <= 50) {
-        craneDirection *= -1;
-    } */
-
+      //Move crane
+      const centerXMovement = width * 0.5;
+      const moveRange = width * 0.25;
 
       time += craneSpeed;
-
-      crane.x = 400 + Math.sin(time) * 300;
+      crane.x = centerXMovement + Math.sin(time) * moveRange;
     }
 
 </script>
