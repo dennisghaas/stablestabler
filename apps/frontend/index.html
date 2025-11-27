@@ -45,7 +45,6 @@
 <script type="text/javascript">
     const width = window.innerWidth;
     const height = window.innerHeight;
-
     const centerX = width * 0.5;
 
     const config = {
@@ -53,220 +52,243 @@
         width: width,
         height: height,
         physics: {
-        default: 'matter',
-        matter: {
-            gravity: { y: 1 },
-            debug: true // Remove debug: true in production!
-        }
-    },
+            default: 'matter',
+            matter: {
+                gravity: { y: 1 },
+                debug: true
+            }
+        },
         scene: {
             preload: preload,
             create: create,
             update: update
         },
         input: {
-        keyboard: true
-    },
+            keyboard: true
+        }
     };
 
     const game = new Phaser.Game(config);
 
-    let crane
-    let craneSpeed = 0.02; // pixels per frame
+    let crane;
+    let craneSpeed = 0.02;
     let time = 0;
-
-    let boundaries;
-    let ground;
-
-    let buildingBlocks;
 
     let blockReady = true;
     let latestBlock = false;
 
-    //Show current score
     let scoreText;
     let currentScore;
     let highScoreText;
     let highscore = 0;
 
-
+    let towerBlocks = [];
 
     async function getHighscore(){
-      try {
-        const response = await fetch(`{{VITE_BASE_API_URL}}/highscore?mode=singleplayer`,{
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json"
-          },
-        })
-
-        if(response.ok){
-          const data = await response.json();
-
-          if(data && data.length > 0){
-            data.forEach((el) => {
-              if(el.score > highscore){
-                highscore = el.score;
-              }
-console.log({highscore})
-              if(highScoreText) {
-                highScoreText.setText('Highscore: ' + highscore);
-              }
+        try {
+            const response = await fetch(`{{VITE_BASE_API_URL}}/highscore?mode=singleplayer`,{
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json"
+                }
             })
-          }
-          
 
-        } else {
-          console.error("Failed to get score");
+            if(response.ok){
+                const data = await response.json();
+
+                if(data && data.length > 0){
+                    data.forEach((el) => {
+                        if(el.score > highscore){
+                            highscore = el.score;
+                        }
+
+                        if(highScoreText) {
+                            highScoreText.setText('Highscore: ' + highscore);
+                        }
+                    })
+                }
+            } else {
+                console.error("Failed to get score");
+            }
+        } catch (error) {
+            console.error("Error while getting score:", error);
+            return null;
         }
-      } catch (error) {
-        console.error("Error while getting score:", error);
-        return null;
-      }
     }
 
     async function saveScore(score, playerName = "Anonymous"){
-      try {
-        const requestBody = {
-          "player": playerName,
-          "score": score,
-          "mode": "singleplayer",
-          "team": "red"
-        };
-        
-        const response = await fetch(`{{VITE_BASE_API_URL}}/highscore`,{
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: 
-            JSON.stringify(requestBody)
-        })
-
-        if(response.ok){
-          console.log("Score saved successfully");
-        } else {
-          console.error("Failed to save score");
-        }
-      } catch (error) {
-        console.error("Error while saving score:", error);
-      }
-    }
-
-    function preload ()
-    {
-      //Load assets
-      this.load.image('crane', 'assets/png/crane.png');
-      this.load.image('redBlockTexture', 'assets/png/block-red.png');
-      this.load.image('redBlockStartTexture', 'assets/png/start-block-red.png');
-
-      this.load.on('loaderror', function (file) {
-        console.error('Failed to load:', file.src);
-    });
-    }
-
-    function create ()
-    {
-      //Set World boundaries
-      boundaries = this.matter.world.setBounds(0, 0, width, height);
-
-      //Create crane
-      crane = this.matter.add.image(centerX, 34, 'crane');
-      crane.setStatic(true)
-      crane.body.label = 'crane';
-
-      // Create ground (static body)
-      this.add.graphics()
-        .fillStyle(0xA52A2A)  // Brown color
-        .fillRect(0, 0, width, 40)
-        .generateTexture('groundTexture', width, 40)
-        .destroy();
-
-      let ground = this.matter.add.image(width/2, height - 20, 'groundTexture', null, 
-                    {   
-                      isStatic: true 
-                    });
-
-      //Create ground floor
-      let groundFloor = this.matter.add.image(
-              width/2, height-160,
-              'redBlockStartTexture', null, 
-              {
-                isStatic: true
-              }
-              )
-              .setScale(0.4)
-      groundFloor.body.label = 'groundFloor';
-
-      //Handle collisions with boundaries
-      this.matter.world.on('collisionstart', function (event) {
-        event.pairs.forEach(function (pair) {
-            const { bodyA, bodyB } = pair;
+        try {
+            const requestBody = {
+                "player": playerName,
+                "score": score,
+                "mode": "singleplayer",
+                "team": "red"
+            };
             
-            // Check if one of the bodies is a boundary
-            if (bodyA.isStatic && bodyA.label === 'Rectangle Body' && !bodyB.isStatic) {
-                saveScore(currentScore);
-                game.destroy();
-            } 
-        });
-      });
+            const response = await fetch(`{{VITE_BASE_API_URL}}/highscore`,{
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(requestBody)
+            })
 
-      //Handle collisions with blocks
-      this.matter.world.on('collisionstart', function (event) {
-        event.pairs.forEach(function (pair) {
-            const { bodyA, bodyB } = pair;
-
-            if(latestBlock && (bodyA === latestBlock.body || bodyB === latestBlock.body)){
-              const otherBody = bodyA === latestBlock.body ? bodyB : bodyA;
-            
-
-            if (otherBody.label === 'groundFloor' || otherBody.label === 'buildingBlock') {
-                    blockReady = true;
-                    latestBlock = null; // Clear reference
-                }
+            if(response.ok){
+                console.log("Score saved successfully");
+            } else {
+                console.error("Failed to save score");
             }
+        } catch (error) {
+            console.error("Error while saving score:", error);
+        }
+    }
+
+    function preload() {
+        this.load.image('crane', 'assets/png/crane.png');
+        this.load.image('redBlockTexture', 'assets/png/block-red.png');
+        this.load.image('redBlockStartTexture', 'assets/png/start-block-red.png');
+
+        this.load.on('loaderror', function (file) {
+            console.error('Failed to load:', file.src);
         });
-      });
+    }
+
+    function create() {
+        // Create custom boundaries - left, right, and bottom only
+        const boundaryThickness = 50;
+        
+        const leftWall = this.matter.add.rectangle(-25, 0, boundaryThickness, 20000, { 
+            isStatic: true 
+        });
+        leftWall.label = 'Rectangle Body';
+        
+        const rightWall = this.matter.add.rectangle(width + 25, 0, boundaryThickness, 20000, { 
+            isStatic: true 
+        });
+        rightWall.label = 'Rectangle Body';
+
+        const bottomWall = this.matter.add.rectangle(width/2, height + 1000, width * 2, boundaryThickness, { 
+            isStatic: true 
+        });
+        bottomWall.label = 'Rectangle Body';
+
+        // Set up camera
+        this.cameras.main.setBounds(0, -10000, width, 20000);
+
+        // Create crane
+        crane = this.matter.add.image(centerX, 34, 'crane');
+        crane.setStatic(true);
+        crane.body.label = 'crane';
+
+        // Create ground
+        this.add.graphics()
+            .fillStyle(0xA52A2A)
+            .fillRect(0, 0, width, 40)
+            .generateTexture('groundTexture', width, 40)
+            .destroy();
+
+        this.matter.add.image(width/2, height - 20, 'groundTexture', null, {   
+            isStatic: true 
+        });
+
+        // Create ground floor
+        let groundFloor = this.matter.add.image(
+            width/2, height-160,
+            'redBlockStartTexture', null, 
+            { isStatic: true }
+        ).setScale(0.4);
+        groundFloor.body.label = 'groundFloor';
+
+        // Handle collisions with boundaries (game over)
+        this.matter.world.on('collisionstart', function (event) {
+            event.pairs.forEach(function (pair) {
+                const { bodyA, bodyB } = pair;
+                
+                if (bodyA.isStatic && bodyA.label === 'Rectangle Body' && !bodyB.isStatic) {
+                    saveScore(currentScore);
+                    game.destroy();
+                } 
+            });
+        });
+
+        // Handle collisions with blocks (camera movement)
+        this.matter.world.on('collisionstart', function (event) {
+            event.pairs.forEach(function (pair) {
+                const { bodyA, bodyB } = pair;
+
+                if(latestBlock && (bodyA === latestBlock.body || bodyB === latestBlock.body)){
+                    const otherBody = bodyA === latestBlock.body ? bodyB : bodyA;
+
+                    if (otherBody.label === 'groundFloor' || otherBody.label === 'buildingBlock') {
+                        blockReady = true;
+                        towerBlocks.push(latestBlock);
+
+                        // Move camera up
+                        const currentCameraY = game.scene.scenes[0].cameras.main.scrollY;
+                        
+                        if(towerBlocks.length > 1) {
+                          newCameraY = currentCameraY - 240;
+                          game.scene.scenes[0].cameras.main.scrollY = newCameraY;
+                        }
+                        
+                        
+                        console.log(`Camera moved to: ${game.scene.scenes[0].cameras.main.scrollY}`);
+                        
+                        latestBlock = null;
+                    }
+                }
+            });
+        });
     
-      //Display score
-      scoreText =  this.add.text(16, 120, 'Score: 0', { fontSize: '32px', fill: '#888' });
-      highScoreText =  this.add.text(16, 145, 'Highscore: 0', { fontSize: '32px', fill: '#888' });
-      currentScore = 0;
-      
-      getHighscore();
+        // Display UI
+        scoreText = this.add.text(16, 110, 'Score: 0', { 
+            fontSize: '32px', 
+            fill: '#888' 
+        }).setScrollFactor(0);
+
+        highScoreText = this.add.text(16, 160, 'Highscore: 0', { 
+            fontSize: '32px', 
+            fill: '#888' 
+        }).setScrollFactor(0);
+
+        currentScore = 0;
+        
+        getHighscore();
     }
 
-    function update ()
-    {
-      //Move crane
-      const centerXMovement = width * 0.5;
-      const moveRange = width * 0.25;
+    function update() {
+        // Move crane
+        const cameraY = this.cameras.main.scrollY;
+        const centerXMovement = width * 0.5;
+        const moveRange = width * 0.25;
 
-      time += craneSpeed;
-      crane.x = centerXMovement + Math.sin(time) * moveRange;
+        time += craneSpeed;
+        crane.x = centerXMovement + Math.sin(time) * moveRange;
+        crane.y = cameraY + 34;
 
-      //Handle spacebar input
-      const spacBar = this.input.keyboard.addKey("SPACE")
-      if(spacBar.isDown){
-          if(blockReady){
-              const position = crane.x;
-              let block = this.matter.add.image(
-                position, 200,
-                'redBlockTexture'
-              )
-              .setScale(0.4)
-              .setBounce(0)
-              .setFriction(1);
+        // Handle spacebar input
+        const spacBar = this.input.keyboard.addKey("SPACE");
+        if(spacBar.isDown){
+            if(blockReady){
+                const position = crane.x;
+                const currentCameraY = this.cameras.main.scrollY;
 
-              latestBlock = block;
-              block.body.label = 'buildingBlock';
-              blockReady = false
-              currentScore += 1;
-              scoreText.setText('Score: ' + currentScore);
-          }
-      }
+                let block = this.matter.add.image(
+                    position, currentCameraY + 100,
+                    'redBlockTexture'
+                )
+                .setScale(0.4)
+                .setBounce(0)
+                .setFriction(1);
+
+                latestBlock = block;
+                block.body.label = 'buildingBlock';
+                blockReady = false;
+                currentScore += 1;
+                scoreText.setText('Score: ' + currentScore);
+            }
+        }
     }
-
 </script>
 
 </body>
