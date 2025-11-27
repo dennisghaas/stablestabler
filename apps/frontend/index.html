@@ -1,12 +1,206 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Frontend</title>
+<!doctype html> 
+<html lang="en"> 
+<head> 
+    <meta charset="UTF-8" />
+    <title>Stable Stabler</title>
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.11.0/dist/phaser.js"></script>
+    <style>
+      *,
+      *::before,
+      *::after {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+      }
+
+      html, body {
+          width: 100%;
+          height: 100%;
+      }
+
+      body {
+          line-height: 1;
+          font-family: Arial, sans-serif;
+          background-color: white;
+      }
+
+      ol, ul {
+          list-style: none;
+      }
+
+      img, video {
+          max-width: 100%;
+          height: auto;
+          display: block;
+      }
+
+      a {
+          text-decoration: none;
+          color: inherit;
+      }
+  </style>
 </head>
 <body>
-  <p>
-    Ich bin der Frontend-Part
-  </p>
+
+<script type="text/javascript">
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+
+    const centerX = width * 0.5;
+
+    const config = {
+        type: Phaser.AUTO,
+        width: width,
+        height: height,
+        physics: {
+        default: 'matter',
+        matter: {
+            gravity: { y: 1 },
+            debug: true // Remove debug: true in production!
+        }
+    },
+        scene: {
+            preload: preload,
+            create: create,
+            update: update
+        },
+        input: {
+        keyboard: true
+    },
+    };
+
+    const game = new Phaser.Game(config);
+
+    let crane
+    let craneSpeed = 0.02; // pixels per frame
+    let time = 0;
+
+    let boundaries;
+    let ground;
+
+    let buildingBlocks;
+
+    let blockReady = true;
+    let latestBlock = false;
+
+    //Show current score
+    let scoreText;
+    let currentScore;
+
+    function preload ()
+    {
+      //Load assets
+      this.load.image('crane', 'assets/png/crane.png');
+      this.load.image('redBlockTexture', 'assets/png/block-red.png');
+      this.load.image('redBlockStartTexture', 'assets/png/start-block-red.png');
+
+      this.load.on('loaderror', function (file) {
+        console.error('Failed to load:', file.src);
+    });
+    }
+
+    function create ()
+    {
+      //Set World boundaries
+      boundaries = this.matter.world.setBounds(0, 0, width, height);
+
+      //Create crane
+      crane = this.matter.add.image(centerX, 34, 'crane');
+      crane.setStatic(true)
+      crane.body.label = 'crane';
+
+      // Create ground (static body)
+      this.add.graphics()
+        .fillStyle(0xA52A2A)  // Brown color
+        .fillRect(0, 0, width, 40)
+        .generateTexture('groundTexture', width, 40)
+        .destroy();
+
+      let ground = this.matter.add.image(width/2, height - 20, 'groundTexture', null, 
+                    {   
+                      isStatic: true 
+                    });
+
+      //Create ground floor
+      let groundFloor = this.matter.add.image(
+              width/2, height-160,
+              'redBlockStartTexture', null, 
+              {
+                isStatic: true
+              }
+              )
+              .setScale(0.4)
+      groundFloor.body.label = 'groundFloor';
+
+      //Handle collisions with boundaries
+      this.matter.world.on('collisionstart', function (event) {
+        event.pairs.forEach(function (pair) {
+            const { bodyA, bodyB } = pair;
+            
+            // Check if one of the bodies is a boundary
+            if (bodyA.isStatic && bodyA.label === 'Rectangle Body' && !bodyB.isStatic) {
+                console.log('BoxA touched boundary!');
+                //game.destroy();
+            } 
+        });
+      });
+
+      //Handle collisions with blocks
+      this.matter.world.on('collisionstart', function (event) {
+        event.pairs.forEach(function (pair) {
+            const { bodyA, bodyB } = pair;
+
+            if(latestBlock && (bodyA === latestBlock.body || bodyB === latestBlock.body)){
+              const otherBody = bodyA === latestBlock.body ? bodyB : bodyA;
+            
+
+            if (otherBody.label === 'groundFloor' || otherBody.label === 'buildingBlock') {
+                    console.log('Latest block landed!');
+                    blockReady = true;
+                    latestBlock = null; // Clear reference
+                }
+            }
+        });
+      });
+    
+      //Display score
+      scoreText =  this.add.text(16, 120, 'Score: 0', { fontSize: '32px', fill: '#888' });
+      currentScore = 0;
+      
+    }
+
+    function update ()
+    {
+      //Move crane
+      const centerXMovement = width * 0.5;
+      const moveRange = width * 0.25;
+
+      time += craneSpeed;
+      crane.x = centerXMovement + Math.sin(time) * moveRange;
+
+      //Handle spacebar input
+      const spacBar = this.input.keyboard.addKey("SPACE")
+      if(spacBar.isDown){
+          if(blockReady){
+              const position = crane.x;
+              let block = this.matter.add.image(
+                position, 200,
+                'redBlockTexture'
+              )
+              .setScale(0.4)
+              .setBounce(0)
+              .setFriction(1);
+
+              latestBlock = block;
+              block.body.label = 'buildingBlock';
+              blockReady = false
+              currentScore += 1;
+              scoreText.setText('Score: ' + currentScore);
+          }
+      }
+    }
+
+</script>
+
 </body>
 </html>
