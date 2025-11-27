@@ -81,8 +81,8 @@
     {
       //Load assets
       this.load.image('crane', 'assets/png/crane.png');
-      this.load.image('redBlock', 'assets/png/block-red.png');
-      this.load.image('redBlockStart', 'assets/png/start-block-red.png');
+      this.load.image('redBlockTexture', 'assets/png/block-red.png');
+      this.load.image('redBlockStartTexture', 'assets/png/start-block-red.png');
 
       this.load.on('loaderror', function (file) {
         console.error('Failed to load:', file.src);
@@ -109,27 +109,31 @@
         isStatic: true 
     });
 
-      /* let ground = this.matter.add.rectangle(width/2, height, width, 40, { isStatic: true, render:{
-        fillStyle: '#A52A2A'
-      } }); */
 
       //Create ground floor
+      this.matter.add.image(
+              width/2, height-75,
+              'redBlockStartTexture'
+              )
+              .setScale(0.4)
+              .setBounce(0)
+              .setFriction(1);
       /* let groundFloor = this.add.graphics();
       groundFloor.fillStyle(0x00ff00, 1); // Green, fully opaque
       groundFloor.fillRect(0, height - 20, 80, 80); // Ground floor
-      groundFloor.generateTexture('redBlockStart', width, 20);
+      groundFloor.generateTexture('groundFloor', width, 20);
 
       this.matter.add.image(
               200, height,
               'groundFloor'
-              ) */
+              )  */
 
       //Create boxes
-      let boxes = this.add.graphics();
-      boxes.fillStyle(0xff0000, 1); // Red, fully opaque
+      /* let boxes = this.add.graphics();
+      boxes.fillStyle(redBlockTexture, 1); // Red, fully opaque
       boxes.fillRect(0, 0, 80, 80); // 40x40 pixel box
       boxes.generateTexture('redBlock', 80, 80);
-      boxes.destroy();
+      boxes.destroy(); */
 
 
 
@@ -153,9 +157,9 @@
               const position = crane.x;
               this.matter.add.image(
               position, 100,
-              'redBlock'
+              'redBlockTexture'
               )
-              .setBody({ type: 'rectangle' })
+              .setScale(0.4)
               .setBounce(0)
               .setFriction(1);
               keyPressed = true
