@@ -73,7 +73,7 @@
 
     let crane
     let craneSpeed = 0.02; // pixels per frame
-    time = 0;
+    let time = 0;
 
     let ground
 
@@ -95,6 +95,20 @@
       //Create crane
       crane = this.matter.add.image(centerX, 34, 'crane');
       crane.setStatic(true)
+
+      //Create boxes
+      let graphics = this.add.graphics();
+      graphics.fillStyle(0xff0000, 1); // Red, fully opaque
+      graphics.fillRect(0, 0, 80, 80); // 40x40 pixel box
+      graphics.generateTexture('redBox', 80, 80);
+      graphics.destroy();
+
+      // Create ground (static body)
+      let groud = this.matter.add.rectangle(width/2, height, width, 40, { isStatic: true });
+
+
+      // Press SPACE to spawn a falling red box
+      let keyPressed = false
     }
 
     function update ()
@@ -105,6 +119,28 @@
 
       time += craneSpeed;
       crane.x = centerXMovement + Math.sin(time) * moveRange;
+
+      //Handle spacebar input
+      const spacBar = this.input.keyboard.addKey("SPACE")
+      if(spacBar.isDown){
+          if(!keyPressed){
+              console.log("SPACEBAR")
+              const position = crane.x;
+              this.matter.add.image(
+              position, 35,
+              'redBox'
+              )
+              .setBody({ type: 'rectangle' })
+              .setBounce(0)
+              .setFriction(1);
+              console.log(position);
+              keyPressed = true
+          }
+      }
+
+      if(spacBar.isUp){
+          keyPressed = false
+      }
     }
 
 </script>
