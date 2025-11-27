@@ -65,14 +65,24 @@
     },
     };
 
-    var game = new Phaser.Game(config);
+    const game = new Phaser.Game(config);
+
+    let crane
+    let ground
 
     function preload ()
     {
+      this.load.image('crane', 'assets/png/crane.png');
+
+      this.load.on('loaderror', function (file) {
+        console.error('Failed to load:', file.src);
+    });
     }
 
     function create ()
     {
+      crane = this.matter.add.image(350, 34, 'crane');
+      crane.setStatic(true);
     }
 
     function update ()
