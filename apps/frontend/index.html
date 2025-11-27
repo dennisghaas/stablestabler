@@ -75,7 +75,12 @@
     let craneSpeed = 0.02; // pixels per frame
     let time = 0;
 
-    let ground
+    let boundaries;
+    let ground;
+
+    let buildingBlocks;
+
+    let keyPressed = false;
 
     function preload ()
     {
@@ -92,11 +97,12 @@
     function create ()
     {
       //Set World boundaries
-      this.matter.world.setBounds(0, 0, width, height);
+      boundaries = this.matter.world.setBounds(0, 0, width, height);
 
       //Create crane
       crane = this.matter.add.image(centerX, 34, 'crane');
       crane.setStatic(true)
+      crane.body.label = 'crane';
 
       // Create ground (static body)
       this.add.graphics()
@@ -105,40 +111,34 @@
         .generateTexture('groundTexture', width, 40)
         .destroy();
 
-      let ground = this.matter.add.image(width/2, height - 20, 'groundTexture', null, { 
-        isStatic: true 
-    });
-
+      let ground = this.matter.add.image(width/2, height - 20, 'groundTexture', null, 
+                    {   
+                      isStatic: true 
+                    });
 
       //Create ground floor
-      this.matter.add.image(
-              width/2, height-75,
-              'redBlockStartTexture'
+      let groundFloor = this.matter.add.image(
+              width/2, height-160,
+              'redBlockStartTexture', null, 
+              {
+                isStatic: true
+              }
               )
               .setScale(0.4)
-              .setBounce(0)
-              .setFriction(1);
-      /* let groundFloor = this.add.graphics();
-      groundFloor.fillStyle(0x00ff00, 1); // Green, fully opaque
-      groundFloor.fillRect(0, height - 20, 80, 80); // Ground floor
-      groundFloor.generateTexture('groundFloor', width, 20);
+      groundFloor.body.label = 'groundFloor';
 
-      this.matter.add.image(
-              200, height,
-              'groundFloor'
-              )  */
-
-      //Create boxes
-      /* let boxes = this.add.graphics();
-      boxes.fillStyle(redBlockTexture, 1); // Red, fully opaque
-      boxes.fillRect(0, 0, 80, 80); // 40x40 pixel box
-      boxes.generateTexture('redBlock', 80, 80);
-      boxes.destroy(); */
-
-
-
-      // Press SPACE to spawn a falling red box
-      let keyPressed = false
+      //Handle collisions
+      this.matter.world.on('collisionstart', function (event) {
+        event.pairs.forEach(function (pair) {
+            const { bodyA, bodyB } = pair;
+            
+            // Check if one of the bodies is a boundary
+            if (bodyA.isStatic && bodyA.label === 'Rectangle Body' && !bodyB.isStatic) {
+                console.log('BoxA touched boundary!', bodyB.position, {bodyB});
+                game.destroy();
+            } 
+        });
+      });
     }
 
     function update ()
@@ -156,8 +156,8 @@
           if(!keyPressed){
               const position = crane.x;
               this.matter.add.image(
-              position, 100,
-              'redBlockTexture'
+                position, 200,
+                'redBlockTexture'
               )
               .setScale(0.4)
               .setBounce(0)
