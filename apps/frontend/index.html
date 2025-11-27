@@ -80,7 +80,12 @@
 
     let buildingBlocks;
 
-    let keyPressed = false;
+    let blockReady = true;
+    let latestBlock = false;
+
+    //Show current score
+    let scoreText;
+    let currentScore;
 
     function preload ()
     {
@@ -127,18 +132,41 @@
               .setScale(0.4)
       groundFloor.body.label = 'groundFloor';
 
-      //Handle collisions
+      //Handle collisions with boundaries
       this.matter.world.on('collisionstart', function (event) {
         event.pairs.forEach(function (pair) {
             const { bodyA, bodyB } = pair;
             
             // Check if one of the bodies is a boundary
             if (bodyA.isStatic && bodyA.label === 'Rectangle Body' && !bodyB.isStatic) {
-                console.log('BoxA touched boundary!', bodyB.position, {bodyB});
-                game.destroy();
+                console.log('BoxA touched boundary!');
+                //game.destroy();
             } 
         });
       });
+
+      //Handle collisions with blocks
+      this.matter.world.on('collisionstart', function (event) {
+        event.pairs.forEach(function (pair) {
+            const { bodyA, bodyB } = pair;
+
+            if(latestBlock && (bodyA === latestBlock.body || bodyB === latestBlock.body)){
+              const otherBody = bodyA === latestBlock.body ? bodyB : bodyA;
+            
+
+            if (otherBody.label === 'groundFloor' || otherBody.label === 'buildingBlock') {
+                    console.log('Latest block landed!');
+                    blockReady = true;
+                    latestBlock = null; // Clear reference
+                }
+            }
+        });
+      });
+    
+      //Display score
+      scoreText =  this.add.text(16, 120, 'Score: 0', { fontSize: '32px', fill: '#888' });
+      currentScore = 0;
+      
     }
 
     function update ()
@@ -153,21 +181,22 @@
       //Handle spacebar input
       const spacBar = this.input.keyboard.addKey("SPACE")
       if(spacBar.isDown){
-          if(!keyPressed){
+          if(blockReady){
               const position = crane.x;
-              this.matter.add.image(
+              let block = this.matter.add.image(
                 position, 200,
                 'redBlockTexture'
               )
               .setScale(0.4)
               .setBounce(0)
               .setFriction(1);
-              keyPressed = true
-          }
-      }
 
-      if(spacBar.isUp){
-          keyPressed = false
+              latestBlock = block;
+              block.body.label = 'buildingBlock';
+              blockReady = false
+              currentScore += 1;
+              scoreText.setText('Score: ' + currentScore);
+          }
       }
     }
 
