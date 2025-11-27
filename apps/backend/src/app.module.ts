@@ -3,10 +3,23 @@ import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { Config } from './config/config';
 import { ConfigModule } from './config/config.module';
 import { HighscoreModule } from './highscore/highscore.module';
+import {
+  ServeStaticModule,
+  ServeStaticModuleOptions,
+} from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
     ConfigModule,
+    ServeStaticModule.forRootAsync({
+      inject: [Config],
+      useFactory: (config: Config): ServeStaticModuleOptions[] => [
+        {
+          rootPath: join(__dirname, '../../frontend', ''),
+        },
+      ],
+    }),
     TypeOrmModule.forRootAsync({
       inject: [Config],
       useFactory: (config: Config): TypeOrmModuleOptions => ({

@@ -1,0 +1,23 @@
+{
+  "name": "stablestabler",
+  "private": true,
+  "workspaces": [
+    "apps/backend"
+  ],
+  "scripts": {
+    "build": "npm run build -w apps/backend",
+    "start": "concurrently -n BACKEND -c green \"npm run start -w apps/backend\"",
+    "start:dev": "concurrently -n BACKEND -c green \"npm run start:dev -w apps/backend\"",
+    "prod:install": "npm install -w apps/backend",
+    "prod:build": "npm run build -w apps/backend",
+    "prod:start": "npm run start:prod -w apps/backend",
+    "prod:run": "npm run prod:install && npm run prod:build && npm run prod:start",
+    "format": "echo \"No frontend: format skipped\"",
+    "lint": "echo \"No frontend: lint skipped\"",
+    "clean": "npm run clean -w apps/backend && rm -rf node_modules"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1",
+    "typescript": "^5.9.3"
+  }
+}
