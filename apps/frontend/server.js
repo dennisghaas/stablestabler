@@ -1,3 +1,4 @@
+require('dotenv').config();
 const http = require("http");
 const fs = require("fs");
 const path = require("path");
@@ -16,14 +17,36 @@ const server = http.createServer((req, res) => {
         ".gif": "image/gif",
     };
 
+    // Handle HTML files with string replacement
+    if (ext === ".html") {
+        fs.readFile(filePath, "utf8", (err, data) => {  // Add "utf8" encoding
+            if (err) {
+                res.writeHead(404);
+                return res.end("Not found");
+            }
+            
+            const modifiedData = data.replace(
+                /\{\{VITE_BASE_API_URL\}\}/g, 
+                process.env.VITE_BASE_API_URL || "http://localhost:3000/api"
+            );
+
+            res.writeHead(200, { "Content-Type": mime[ext] });
+            res.end(modifiedData);
+        });
+        return;
+    }
+
+    // Handle other files (images, etc.) as binary
     fs.readFile(filePath, (err, data) => {
         if (err) {
             res.writeHead(404);
             return res.end("Not found");
         }
+        
         res.writeHead(200, { "Content-Type": mime[ext] || "text/plain" });
         res.end(data);
     });
 });
 
-server.listen(8080, () => console.log("Server läuft auf http://localhost:8080"));
+const PORT = process.env.PORT || 8080;
+server.listen(PORT, () => console.log(`Server läuft auf http://localhost:${PORT}`));
