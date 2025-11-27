@@ -86,6 +86,72 @@
     //Show current score
     let scoreText;
     let currentScore;
+    let highScoreText;
+    let highscore = 0;
+
+
+
+    async function getHighscore(){
+      try {
+        const response = await fetch(`{{VITE_BASE_API_URL}}/highscore?mode=singleplayer`,{
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json"
+          },
+        })
+
+        if(response.ok){
+          const data = await response.json();
+
+          if(data && data.length > 0){
+            data.forEach((el) => {
+              if(el.score > highscore){
+                highscore = el.score;
+              }
+console.log({highscore})
+              if(highScoreText) {
+                highScoreText.setText('Highscore: ' + highscore);
+              }
+            })
+          }
+          
+
+        } else {
+          console.error("Failed to get score");
+        }
+      } catch (error) {
+        console.error("Error while getting score:", error);
+        return null;
+      }
+    }
+
+    async function saveScore(score, playerName = "Anonymous"){
+      try {
+        const requestBody = {
+          "player": playerName,
+          "score": score,
+          "mode": "singleplayer",
+          "team": "red"
+        };
+        
+        const response = await fetch(`{{VITE_BASE_API_URL}}/highscore`,{
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: 
+            JSON.stringify(requestBody)
+        })
+
+        if(response.ok){
+          console.log("Score saved successfully");
+        } else {
+          console.error("Failed to save score");
+        }
+      } catch (error) {
+        console.error("Error while saving score:", error);
+      }
+    }
 
     function preload ()
     {
@@ -139,8 +205,8 @@
             
             // Check if one of the bodies is a boundary
             if (bodyA.isStatic && bodyA.label === 'Rectangle Body' && !bodyB.isStatic) {
-                console.log('BoxA touched boundary!');
-                //game.destroy();
+                saveScore(currentScore);
+                game.destroy();
             } 
         });
       });
@@ -155,7 +221,6 @@
             
 
             if (otherBody.label === 'groundFloor' || otherBody.label === 'buildingBlock') {
-                    console.log('Latest block landed!');
                     blockReady = true;
                     latestBlock = null; // Clear reference
                 }
@@ -165,8 +230,10 @@
     
       //Display score
       scoreText =  this.add.text(16, 120, 'Score: 0', { fontSize: '32px', fill: '#888' });
+      highScoreText =  this.add.text(16, 145, 'Highscore: 0', { fontSize: '32px', fill: '#888' });
       currentScore = 0;
       
+      getHighscore();
     }
 
     function update ()
