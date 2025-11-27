@@ -228,7 +228,12 @@
                         
                         if(towerBlocks.length > 1) {
                           newCameraY = currentCameraY - 240;
-                          game.scene.scenes[0].cameras.main.scrollY = newCameraY;
+                          game.scene.scenes[0].tweens.add({
+                              targets: game.scene.scenes[0].cameras.main,
+                              scrollY: newCameraY,
+                              duration: 500, // 1.5 seconds - adjust this for speed
+                              ease: 'Power2.easeOut' // Smooth easing
+                          });
                         }
                         
                         
