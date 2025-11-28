@@ -180,8 +180,9 @@
         this.cameras.main.setBounds(0, -10000, width, 20000);
 
         // Create crane with floor attached
-        crane = this.matter.add.image(centerX, 0, 'crane')
-        .setScale(0.2);
+        crane = this.matter.add.image(centerX, 0, 'crane');
+        const scaleToFitCrane = unifiedHeightUnit / (crane.height*2);
+        crane.setScale(scaleToFitCrane);
 
 
 
@@ -250,7 +251,7 @@
                         // Move camera up
                         const currentCameraY = game.scene.scenes[0].cameras.main.scrollY;
                         
-                        if(towerBlocks.length > 2) {
+                        if(towerBlocks.length > 1) {
                           newCameraY = currentCameraY - 240;
                           game.scene.scenes[0].tweens.add({
                               targets: game.scene.scenes[0].cameras.main,
