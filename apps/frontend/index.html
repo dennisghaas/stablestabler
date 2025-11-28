@@ -183,16 +183,7 @@
 
 
 
-        const attachedFloor = this.add.image(
-                      centerX, 
-                      crane.y + crane.height + 54 + currentCameraY,
-                      'redBlockTexture',
-                      null, 
-                      { isStatic: true,
-                        label: 'craneFloor'
-                      }
-                  )
-                  .setScale(0.4);
+        
 
 
 
@@ -290,6 +281,17 @@
         time += craneSpeed;
         crane.x = centerXMovement + Math.sin(time) * moveRange;
         crane.y = cameraY + 34;
+
+        const attachedFloor = this.add.image(
+                      crane.x, 
+                      crane.y + crane.height + 54 + currentCameraY,
+                      'redBlockTexture',
+                      null, 
+                      { isStatic: true,
+                        label: 'craneFloor'
+                      }
+                  )
+                  .setScale(0.4);
 
         // Handle spacebar input
         const spacBar = this.input.keyboard.addKey("SPACE");
