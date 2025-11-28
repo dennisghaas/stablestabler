@@ -69,7 +69,7 @@
 
     const game = new Phaser.Game(config);
 
-    let currentCameraY
+    //let currentCameraY;
 
     let crane;
     let craneSpeed = 0.02;
@@ -155,7 +155,7 @@
     }
 
     function create() {
-        currentCameraY = this.cameras.main.scrollY;
+        //currentCameraY = this.cameras.main.scrollY;
         // Create custom boundaries - left, right, and bottom only
         const boundaryThickness = 50;
         
@@ -288,6 +288,7 @@
         if(spacBar.isDown){
             if(blockReady){
                 const position = crane.x;
+                const currentCameraY = this.cameras.main.scrollY;
                 
 
                 let block = this.matter.add.image(
