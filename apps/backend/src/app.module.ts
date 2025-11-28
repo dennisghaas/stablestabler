@@ -8,6 +8,7 @@ import {
   ServeStaticModuleOptions,
 } from '@nestjs/serve-static';
 import { join } from 'path';
+import { RoomModule } from './room/room.module';
 
 @Module({
   imports: [
@@ -31,10 +32,10 @@ import { join } from 'path';
         database: config.getDbName(),
         autoLoadEntities: true,
         synchronize: config.getDbSync(),
-        dropSchema: true,
       }),
     }),
     HighscoreModule,
+    RoomModule,
   ],
 })
 export class AppModule {}
