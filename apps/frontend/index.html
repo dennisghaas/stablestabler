@@ -148,6 +148,7 @@
 
     function preload() {
         this.load.image('crane', 'assets/png/crane.png');
+        this.load.image('rope', 'assets/png/rope.png');
         this.load.image('redBlockTexture', 'assets/png/block-red.png');
         this.load.image('redBlockStartTexture', 'assets/png/start-block-red.png');
 
@@ -183,7 +184,15 @@
         crane = this.matter.add.image(centerX, 0, 'crane');
         const scaleToFitCrane = unifiedHeightUnit / (crane.height*2);
         crane.setScale(scaleToFitCrane);
+        crane.setStatic(true);
+        crane.body.label = 'crane';
 
+        rope = this.add.image(
+          centerX, 
+          crane.displayHeight/2, // Initial position
+          'rope'
+        );
+        rope.setScale( scaleToFitCrane/3 );
 
 
         attachedFloor = this.add.image(
@@ -195,10 +204,6 @@
         const scaleToFitAttachedFloor = unifiedHeightUnit / attachedFloor.height;
         attachedFloor.setScale(scaleToFitAttachedFloor);
 
-
-
-        crane.setStatic(true);
-        crane.body.label = 'crane';
 
         // Create ground
         const ground = this.add.graphics()
@@ -222,7 +227,6 @@
 
         const scaleToFitGroundFloor = unifiedHeightUnit / groundFloor.height;
         groundFloor.setScale(scaleToFitGroundFloor);
-        console.log({groundFloor});
 
         // Handle collisions with boundaries (game over)
         this.matter.world.on('collisionstart', function (event) {
@@ -282,7 +286,7 @@
         }).setScrollFactor(0);
 
         currentScore = 0;
-        
+
         getHighscore();
     }
 
@@ -296,8 +300,12 @@
         crane.x = centerXMovement + Math.sin(time) * moveRange;
         crane.y = cameraY - unifiedHeightUnit + crane.height  
 
+        rope.x = crane.x;
+        rope.y = crane.y + crane.height/2;
+
+        // In the update function
         attachedFloor.x = crane.x;
-        attachedFloor.y = crane.y + crane.height + 54;
+        attachedFloor.y = crane.y + crane.displayHeight/2 + attachedFloor.displayHeight;
 
         // Handle spacebar input
         const spacBar = this.input.keyboard.addKey("SPACE");
@@ -308,7 +316,8 @@
                 
 
                 let block = this.matter.add.image(
-                    position, currentCameraY + 100,
+                    position, 
+                    crane.y + crane.displayHeight/2 + attachedFloor.displayHeight,
                     'redBlockTexture'
                 )
                 .setBounce(0)
