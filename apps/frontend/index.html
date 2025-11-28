@@ -50,6 +50,7 @@
         type: Phaser.AUTO,
         width: width,
         height: height,
+        backgroundColor: '#87CEEB',
         physics: {
             default: 'matter',
             matter: {
@@ -69,7 +70,7 @@
 
     const game = new Phaser.Game(config);
 
-    //let currentCameraY;
+    let currentCameraY = 0;
 
     let crane;
     let craneSpeed = 0.02;
@@ -179,15 +180,22 @@
 
         // Create crane with floor attached
         crane = this.matter.add.image(centerX, 34, 'crane');
-        /* const attachedFloor = this.matter.add.image(
-                      centerX, currentCameraY,
+
+
+
+        const attachedFloor = this.add.image(
+                      centerX, 
+                      crane.y + crane.height + 54 + currentCameraY,
                       'redBlockTexture',
                       null, 
                       { isStatic: true,
                         label: 'craneFloor'
                       }
                   )
-                  .setScale(0.4); */
+                  .setScale(0.4);
+
+
+
         console.log({crane})
         crane.setStatic(true);
         crane.body.label = 'crane';
