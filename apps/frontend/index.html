@@ -19,7 +19,6 @@
       }
 
       body {
-          line-height: 1;
           font-family: Arial, sans-serif;
           background-color: white;
       }
@@ -69,6 +68,8 @@
     };
 
     const game = new Phaser.Game(config);
+
+    let currentCameraY
 
     let crane;
     let craneSpeed = 0.02;
@@ -154,6 +155,7 @@
     }
 
     function create() {
+        currentCameraY = this.cameras.main.scrollY;
         // Create custom boundaries - left, right, and bottom only
         const boundaryThickness = 50;
         
@@ -175,8 +177,18 @@
         // Set up camera
         this.cameras.main.setBounds(0, -10000, width, 20000);
 
-        // Create crane
+        // Create crane with floor attached
         crane = this.matter.add.image(centerX, 34, 'crane');
+        /* const attachedFloor = this.matter.add.image(
+                      centerX, currentCameraY,
+                      'redBlockTexture',
+                      null, 
+                      { isStatic: true,
+                        label: 'craneFloor'
+                      }
+                  )
+                  .setScale(0.4); */
+        console.log({crane})
         crane.setStatic(true);
         crane.body.label = 'crane';
 
@@ -276,7 +288,7 @@
         if(spacBar.isDown){
             if(blockReady){
                 const position = crane.x;
-                const currentCameraY = this.cameras.main.scrollY;
+                
 
                 let block = this.matter.add.image(
                     position, currentCameraY + 100,
