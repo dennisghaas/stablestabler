@@ -252,7 +252,7 @@
                         const currentCameraY = game.scene.scenes[0].cameras.main.scrollY;
                         
                         if(towerBlocks.length > 1) {
-                          newCameraY = currentCameraY - 240;
+                          newCameraY = currentCameraY - unifiedHeightUnit;
                           game.scene.scenes[0].tweens.add({
                               targets: game.scene.scenes[0].cameras.main,
                               scrollY: newCameraY,
