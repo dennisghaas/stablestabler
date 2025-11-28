@@ -44,6 +44,7 @@
 <script type="text/javascript">
     const width = window.innerWidth;
     const height = window.innerHeight;
+    const unifiedHeightUnit = height * 0.15;
     const centerX = width * 0.5;
 
     const config = {
@@ -55,7 +56,7 @@
             default: 'matter',
             matter: {
                 gravity: { y: 1 },
-                debug: true
+                //debug: true
             }
         },
         scene: {
@@ -179,17 +180,19 @@
         this.cameras.main.setBounds(0, -10000, width, 20000);
 
         // Create crane with floor attached
-        crane = this.matter.add.image(centerX, 34, 'crane');
+        crane = this.matter.add.image(centerX, 0, 'crane')
+        .setScale(0.2);
 
 
 
         attachedFloor = this.add.image(
           centerX, 
-          34 + 54, // Initial position
+          0, // Initial position
           'redBlockTexture'
         )
-        .setScale(0.4)
         .setDepth(-1);
+        const scaleToFitAttachedFloor = unifiedHeightUnit / attachedFloor.height;
+        attachedFloor.setScale(scaleToFitAttachedFloor);
 
 
 
@@ -197,23 +200,28 @@
         crane.body.label = 'crane';
 
         // Create ground
-        this.add.graphics()
+        const ground = this.add.graphics()
             .fillStyle(0xA52A2A)
-            .fillRect(0, 0, width, 40)
+            .fillRect(0, 0, width, unifiedHeightUnit)
             .generateTexture('groundTexture', width, 40)
             .destroy();
 
-        this.matter.add.image(width/2, height - 20, 'groundTexture', null, {   
+        this.matter.add.image(width/2, height - unifiedHeightUnit/6, 'groundTexture', null, {   
             isStatic: true 
         });
 
         // Create ground floor
         let groundFloor = this.matter.add.image(
-            width/2, height-160,
+            width/2,
+            height - unifiedHeightUnit/6 - unifiedHeightUnit/2,
             'redBlockStartTexture', null, 
             { isStatic: true }
-        ).setScale(0.4);
+        );
         groundFloor.body.label = 'groundFloor';
+
+        const scaleToFitGroundFloor = unifiedHeightUnit / groundFloor.height;
+        groundFloor.setScale(scaleToFitGroundFloor);
+        console.log({groundFloor});
 
         // Handle collisions with boundaries (game over)
         this.matter.world.on('collisionstart', function (event) {
@@ -242,7 +250,7 @@
                         // Move camera up
                         const currentCameraY = game.scene.scenes[0].cameras.main.scrollY;
                         
-                        if(towerBlocks.length > 1) {
+                        if(towerBlocks.length > 2) {
                           newCameraY = currentCameraY - 240;
                           game.scene.scenes[0].tweens.add({
                               targets: game.scene.scenes[0].cameras.main,
@@ -302,9 +310,11 @@
                     position, currentCameraY + 100,
                     'redBlockTexture'
                 )
-                .setScale(0.4)
                 .setBounce(0)
                 .setFriction(1);
+
+                const scaleToFitBlock = unifiedHeightUnit / block.height;
+                block.setScale(scaleToFitBlock);
 
                 latestBlock = block;
                 block.body.label = 'buildingBlock';
