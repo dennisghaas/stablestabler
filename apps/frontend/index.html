@@ -294,7 +294,7 @@
 
         time += craneSpeed;
         crane.x = centerXMovement + Math.sin(time) * moveRange;
-        crane.y = cameraY + 34;
+        crane.y = cameraY - unifiedHeightUnit + crane.height  
 
         attachedFloor.x = crane.x;
         attachedFloor.y = crane.y + crane.height + 54;
