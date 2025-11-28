@@ -189,7 +189,7 @@
 
         rope = this.add.image(
           centerX, 
-          crane.displayHeight/2, // Initial position
+          0, // Initial position
           'rope'
         );
         rope.setScale( scaleToFitCrane/3 );
@@ -298,10 +298,10 @@
 
         time += craneSpeed;
         crane.x = centerXMovement + Math.sin(time) * moveRange;
-        crane.y = cameraY - unifiedHeightUnit + crane.height  
+        crane.y = cameraY + crane.displayHeight/2;  
 
         rope.x = crane.x;
-        rope.y = crane.y + crane.height/2;
+        rope.y = crane.y + crane.displayHeight;
 
         // In the update function
         attachedFloor.x = crane.x;
