@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { Config } from './config/config';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { join } from 'path';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -40,5 +41,6 @@ async function bootstrap() {
 
   console.log('Port:', config.getPort());
   console.log('Api:', config.getBaseApiUrl());
+  console.log('Serve Port', join(__dirname, '../../frontend', 'dist'));
 }
 bootstrap();
