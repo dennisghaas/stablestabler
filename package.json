@@ -8,10 +8,11 @@
     "node": ">=20.10.0"
   },
   "scripts": {
+    "copy:fe": "mkdir -p apps/backend/dist/public && cp apps/frontend/index.html apps/backend/dist/public/index.html",
     "build": "npm run build -w apps/backend",
     "start": "concurrently -n BACKEND -c green \"npm run start -w apps/backend\"",
     "start:dev": "concurrently -n BACKEND -c green \"npm run start:dev -w apps/backend\"",
-    "prod:build": "npm run build -w apps/backend",
+    "prod:build": "npm run copy:fe && npm run build -w apps/backend",
     "prod:start": "npm run start:prod -w apps/backend",
     "format": "echo \"No frontend: format skipped\"",
     "lint": "echo \"No frontend: lint skipped\"",

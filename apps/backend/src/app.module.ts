@@ -17,7 +17,7 @@ import { RoomModule } from './room/room.module';
       inject: [Config],
       useFactory: (config: Config): ServeStaticModuleOptions[] => [
         {
-          rootPath: join(__dirname, '../../frontend', ''),
+          rootPath: join(__dirname, 'public'),
         },
       ],
     }),
