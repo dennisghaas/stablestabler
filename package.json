@@ -4,14 +4,15 @@
   "workspaces": [
     "apps/backend"
   ],
+  "engines": {
+    "node": ">=20.10.0"
+  },
   "scripts": {
     "build": "npm run build -w apps/backend",
     "start": "concurrently -n BACKEND -c green \"npm run start -w apps/backend\"",
     "start:dev": "concurrently -n BACKEND -c green \"npm run start:dev -w apps/backend\"",
-    "prod:install": "npm install -w apps/backend",
     "prod:build": "npm run build -w apps/backend",
     "prod:start": "npm run start:prod -w apps/backend",
-    "prod:run": "npm run prod:install && npm run prod:build && npm run prod:start",
     "format": "echo \"No frontend: format skipped\"",
     "lint": "echo \"No frontend: lint skipped\"",
     "clean": "npm run clean -w apps/backend && rm -rf node_modules"
