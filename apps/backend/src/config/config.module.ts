@@ -9,11 +9,14 @@ import { Config } from './config';
 @Module({
   imports: [
     NestConfigModule.forRoot({
-      envFilePath: resolve(process.cwd(), '../../.env'),
+      isGlobal: true,
+      ignoreEnvFile: process.env.NODE_ENV === 'production',
+      envFilePath:
+        process.env.NODE_ENV === 'production'
+          ? undefined
+          : resolve(process.cwd(), '../../.env'),
       validate: createValidator(EnvironmentVariables),
-      validationOptions: {
-        allowUnknown: false,
-      },
+      validationOptions: { allowUnknown: false },
     }),
   ],
   providers: [Config],

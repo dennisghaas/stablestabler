@@ -28,7 +28,7 @@ import { RoomModule } from './room/room.module';
         host: config.getDbHost(),
         port: config.getDbPort(),
         username: config.getDbUser(),
-        password: config.getDbPassword,
+        password: config.getDbPassword(),
         database: config.getDbName(),
         autoLoadEntities: true,
         synchronize: config.getDbSync(),
