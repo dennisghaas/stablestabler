@@ -37,8 +37,9 @@ async function bootstrap() {
     SwaggerModule.setup(project.path, app, documentFactory);
   }
 
-  await app.listen(config.getPort());
-
+  await app.listen(config.getPort(), '0.0.0.0');
+  console.log(`Listening on 0.0.0.0:${config.getPort()}`);
+  console.log(`Environment: ${config.getNodeEnv()}`);
   console.log('Port:', config.getPort());
   console.log('Api:', config.getBaseApiUrl());
   console.log('Serve Port', join(__dirname, '../../frontend', 'dist'));
