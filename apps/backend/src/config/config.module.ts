@@ -15,6 +15,7 @@ import { Config } from './config';
         process.env.NODE_ENV === 'production'
           ? undefined
           : resolve(process.cwd(), '../../.env'),
+
       validate: createValidator(EnvironmentVariables),
       validationOptions: { allowUnknown: false },
     }),
