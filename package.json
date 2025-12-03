@@ -2,7 +2,8 @@
   "name": "stablestabler",
   "private": true,
   "workspaces": [
-    "apps/backend"
+    "apps/backend",
+    "apps/frontend"
   ],
   "engines": {
     "node": ">=20.10.0"
@@ -11,7 +12,7 @@
     "prepare:fe": "mkdir -p apps/frontend/dist && cp apps/frontend/index.html apps/frontend/dist/index.html",
     "build": "npm run build -w apps/backend",
     "start": "concurrently -n FRONEND,BACKEND -c blue,green \"npm run prepare:fe\" \"npm run start -w apps/backend\"",
-    "start:dev": "concurrently -n FRONEND,BACKEND -c blue,green \"npm run prepare:fe\" \"npm run start:dev -w apps/backend\"",
+    "start:dev": "concurrently -n FRONEND,BACKEND -c blue,green \"npm run prepare:fe && cd apps/frontend && node server.js\" \"npm run start:dev -w apps/backend\"",
     "prod:build": "npm run prepare:fe && npm run build -w apps/backend",
     "prod:start": "npm run start:prod -w apps/backend",
     "format": "echo \"No frontend: format skipped\"",

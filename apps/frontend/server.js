@@ -1,4 +1,4 @@
-require('dotenv').config();
+require('dotenv').config({path: '../../.env'});
 const http = require("http");
 const fs = require("fs");
 const path = require("path");
@@ -48,5 +48,5 @@ const server = http.createServer((req, res) => {
     });
 });
 
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.VITE_PORT || 8080;
 server.listen(PORT, () => console.log(`Server läuft auf http://localhost:${PORT}`));
