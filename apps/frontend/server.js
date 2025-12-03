@@ -27,7 +27,7 @@ const server = http.createServer((req, res) => {
             
             const modifiedData = data.replace(
                 /\{\{VITE_BASE_API_URL\}\}/g, 
-                process.env.VITE_BASE_API_URL || "http://localhost:3000/api"
+                process.env.VITE_BASE_API_URL || "http://localhost:3005/api"
             );
 
             res.writeHead(200, { "Content-Type": mime[ext] });
@@ -48,5 +48,5 @@ const server = http.createServer((req, res) => {
     });
 });
 
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.FRONTEND_PORT || 8080;
 server.listen(PORT, () => console.log(`Server läuft auf http://localhost:${PORT}`));
