@@ -1,4 +1,4 @@
-require('dotenv').config();
+require('dotenv').config({path: '../../.env'});
 const http = require("http");
 const fs = require("fs");
 const path = require("path");
@@ -27,7 +27,7 @@ const server = http.createServer((req, res) => {
             
             const modifiedData = data.replace(
                 /\{\{VITE_BASE_API_URL\}\}/g, 
-                process.env.VITE_BASE_API_URL || "http://localhost:3005/api"
+                process.env.VITE_BASE_API_URL || "http://localhost:3000/api"
             );
 
             res.writeHead(200, { "Content-Type": mime[ext] });
