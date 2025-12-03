@@ -48,5 +48,5 @@ const server = http.createServer((req, res) => {
     });
 });
 
-const PORT = process.env.FRONTEND_PORT || 8080;
+const PORT = process.env.VITE_PORT || 8080;
 server.listen(PORT, () => console.log(`Server läuft auf http://localhost:${PORT}`));
