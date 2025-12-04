@@ -9,6 +9,7 @@ import {
 } from '@nestjs/serve-static';
 import { join } from 'path';
 import { RoomModule } from './room/room.module';
+import { FrontendController } from './frontend/frontend.controller';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { RoomModule } from './room/room.module';
       useFactory: (config: Config): ServeStaticModuleOptions[] => [
         {
           rootPath: join(__dirname, '../../frontend', ''),
+          exclude: ['/'],
         },
       ],
     }),
@@ -37,5 +39,6 @@ import { RoomModule } from './room/room.module';
     HighscoreModule,
     RoomModule,
   ],
+  controllers: [FrontendController],
 })
 export class AppModule {}
