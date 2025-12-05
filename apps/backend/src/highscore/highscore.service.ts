@@ -37,7 +37,19 @@ export class HighscoreService {
 
   async findByMode(mode: GameMode): Promise<HighscoreEntity[]> {
     return this.highScoreRepository.find({
-      where: { mode },
+      where: {
+        mode,
+      },
+      order: { score: 'DESC' },
     });
+  }
+
+  async removeMany(entries: HighscoreEntity[]): Promise<number> {
+    if (!entries.length) {
+      return 0;
+    }
+
+    const result = await this.highScoreRepository.remove(entries);
+    return result.length;
   }
 }

@@ -10,10 +10,12 @@ import {
 import { join } from 'path';
 import { RoomModule } from './room/room.module';
 import { FrontendController } from './frontend/frontend.controller';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
     ConfigModule,
+    ScheduleModule.forRoot(),
     ServeStaticModule.forRootAsync({
       inject: [Config],
       useFactory: (config: Config): ServeStaticModuleOptions[] => [
@@ -37,7 +39,7 @@ import { FrontendController } from './frontend/frontend.controller';
       }),
     }),
     HighscoreModule,
-    RoomModule,
+    // RoomModule,
   ],
   controllers: [FrontendController],
 })
