@@ -90,19 +90,13 @@
     let towerBlocks = [];
 
     function restartGame() {
-        // Reset all game variables to their initial state
-        currentCameraY = 0;
-        time = 0;
-        blockReady = true;
-        latestBlock = false;
-        currentScore = 0;
-        towerBlocks = [];
-
         const restartDialog = document.createElement("dialog");
         restartDialog.style.padding = "20px";
         restartDialog.style.border = "2px solid #333";
         restartDialog.style.borderRadius = "10px";
-        restartDialog.style.margin = "auto"
+        restartDialog.style.margin = "auto";
+        restartDialog.style.backgroundColor = "white";
+        restartDialog.style.zIndex = "1000";
         
         const gameOverText = document.createElement("h2");
         gameOverText.innerText = "Game Over!";
@@ -117,8 +111,24 @@
         restartButton.style.padding = "10px 20px";
         restartButton.style.fontSize = "16px";
         restartButton.addEventListener("click", (event) => {
+            // Close and remove dialog
             restartDialog.close();
             document.body.removeChild(restartDialog);
+            
+            // Now destroy the old game and create new one
+            if (game) {
+                game.destroy(true);
+            }
+            
+            // Reset all game variables to their initial state
+            currentCameraY = 0;
+            time = 0;
+            blockReady = true;
+            latestBlock = false;
+            currentScore = 0;
+            towerBlocks = [];
+            
+            // Create new game
             game = new Phaser.Game(config);
         });
 
@@ -126,7 +136,7 @@
         restartDialog.appendChild(scoreText);
         restartDialog.appendChild(restartButton);
         document.body.appendChild(restartDialog);
-        restartDialog.showModal(); // Show the dialog
+        restartDialog.showModal();
     }
 
     async function getHighscore(){
@@ -278,14 +288,14 @@
                 if (bodyA.isStatic && bodyA.label === 'Rectangle Body' && !bodyB.isStatic) {
                     saveScore(currentScore);
                     
-                    // Properly destroy the current game
-                    if (game) {
-                        game.destroy(true); // true parameter removes canvas
+                    // Pause the game instead of destroying it
+                    if (game && game.scene.scenes[0]) {
+                        game.scene.scenes[0].matter.world.pause();
+                        game.scene.scenes[0].input.enabled = false;
                     }
                     
-                    setTimeout(() => {
-                        restartGame();
-                    }, 100); // Reduced timeout for faster restart
+                    // Show restart dialog immediately (no timeout needed)
+                    restartGame();
                 } 
             });
         });
