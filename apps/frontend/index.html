@@ -55,7 +55,12 @@
         physics: {
             default: 'matter',
             matter: {
-                gravity: { y: 1 },
+                gravity: { y: 0.8 }, // Reduced from 1 - lighter gravity
+                // Add these stability settings
+                constraintIterations: 4,
+                positionIterations: 8,
+                velocityIterations: 6,
+                enableSleeping: true, // Allows blocks to "sleep" when stable
                 //debug: true
             }
         },
@@ -374,14 +379,19 @@
                 const position = crane.x;
                 const currentCameraY = this.cameras.main.scrollY;
                 
-
                 let block = this.matter.add.image(
                     position, 
                     crane.y + crane.displayHeight/2 + attachedFloor.displayHeight,
                     'redBlockTexture'
                 )
-                .setBounce(0)
-                .setFriction(1);
+                .setBounce(0.08) // Slightly reduced bounce
+                .setFriction(1) // Increased friction for more stability
+                .setFrictionStatic(1.15) // Higher static friction
+                .setDensity(0.9); // Slightly reduced density
+
+                // Additional stability properties
+                block.body.inertia = Infinity; // Prevents rotation from small forces
+                block.body.inverseInertia = 0;
 
                 const scaleToFitBlock = unifiedHeightUnit / block.height;
                 block.setScale(scaleToFitBlock);
