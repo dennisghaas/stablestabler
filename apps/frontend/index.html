@@ -307,9 +307,9 @@
         attachedFloor.x = crane.x;
         attachedFloor.y = crane.y + crane.displayHeight/2 + attachedFloor.displayHeight;
 
-        // Handle spacebar input
+        // Handle spacebar input - changed from isDown to wasJustDown
         const spacBar = this.input.keyboard.addKey("SPACE");
-        if(spacBar.isDown){
+        if(Phaser.Input.Keyboard.JustDown(spacBar)){
             if(blockReady){
                 const position = crane.x;
                 const currentCameraY = this.cameras.main.scrollY;
