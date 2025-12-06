@@ -116,6 +116,16 @@
         enterNameField.style.textAlign = "center";
         enterNameField.style.display = "block";
         enterNameField.style.margin = "8px auto";
+        enterNameField.addEventListener("click", (event) => {
+            playerName = enterNameField.value
+            enterNameDialog.close();
+        });
+        enterNameField.addEventListener("keydown", (event) => {
+            if (event.key === 'Enter'){
+                playerName = enterNameField.value
+                enterNameDialog.close();
+            }
+        });
 
         const enterNameButton = document.createElement("button");
         enterNameButton.innerText = "Let's play!";
@@ -124,7 +134,10 @@
         enterNameButton.style.display = "block";
         enterNameButton.style.margin = "0 auto";
         enterNameButton.addEventListener("click", (event) => {
-            // Close and remove dialog
+            playerName = enterNameField.value
+            enterNameDialog.close();
+        });
+        enterNameButton.addEventListener("submit", (event) => {
             playerName = enterNameField.value
             enterNameDialog.close();
         });
