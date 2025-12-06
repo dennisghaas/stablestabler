@@ -97,9 +97,36 @@
         latestBlock = false;
         currentScore = 0;
         towerBlocks = [];
+
+        const restartDialog = document.createElement("dialog");
+        restartDialog.style.padding = "20px";
+        restartDialog.style.border = "2px solid #333";
+        restartDialog.style.borderRadius = "10px";
+        restartDialog.style.margin = "auto"
         
-        // Create a new game instance with the same config
-        game = new Phaser.Game(config);
+        const gameOverText = document.createElement("h2");
+        gameOverText.innerText = "Game Over!";
+        gameOverText.style.marginBottom = "10px";
+        
+        const scoreText = document.createElement("p");
+        scoreText.innerText = `Your Score: ${currentScore}`;
+        scoreText.style.marginBottom = "20px";
+        
+        const restartButton = document.createElement("button");
+        restartButton.innerText = "RESTART";
+        restartButton.style.padding = "10px 20px";
+        restartButton.style.fontSize = "16px";
+        restartButton.addEventListener("click", (event) => {
+            restartDialog.close();
+            document.body.removeChild(restartDialog);
+            game = new Phaser.Game(config);
+        });
+
+        restartDialog.appendChild(gameOverText);
+        restartDialog.appendChild(scoreText);
+        restartDialog.appendChild(restartButton);
+        document.body.appendChild(restartDialog);
+        restartDialog.showModal(); // Show the dialog
     }
 
     async function getHighscore(){
