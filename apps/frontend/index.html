@@ -94,6 +94,48 @@
 
     let towerBlocks = [];
 
+    let playerName;
+
+    function showPlayernameModal() {
+        const enterNameDialog = document.createElement("dialog");
+        enterNameDialog.style.padding = "20px";
+        enterNameDialog.style.border = "2px solid #333";
+        enterNameDialog.style.borderRadius = "10px";
+        enterNameDialog.style.margin = "auto";
+        enterNameDialog.style.backgroundColor = "white";
+        enterNameDialog.style.zIndex = "1000";
+
+        const enterNameText = document.createElement("h2");
+        enterNameText.innerText = "Enter your name";
+        enterNameText.style.textAlign = "center";
+        enterNameText.style.marginBottom = "10px";
+
+        const enterNameField = document.createElement("INPUT");
+        enterNameField.setAttribute("type","text");
+        enterNameField.style.height = "2rem";
+        enterNameField.style.textAlign = "center";
+        enterNameField.style.display = "block";
+        enterNameField.style.margin = "8px auto";
+
+        const enterNameButton = document.createElement("button");
+        enterNameButton.innerText = "Let's play!";
+        enterNameButton.style.padding = "10px 20px";
+        enterNameButton.style.fontSize = "16px";
+        enterNameButton.style.display = "block";
+        enterNameButton.style.margin = "0 auto";
+        enterNameButton.addEventListener("click", (event) => {
+            // Close and remove dialog
+            playerName = enterNameField.value
+            enterNameDialog.close();
+        });
+
+        enterNameDialog.appendChild(enterNameText);
+        enterNameDialog.appendChild(enterNameField);
+        enterNameDialog.appendChild(enterNameButton);
+        document.body.appendChild(enterNameDialog);
+        enterNameDialog.showModal();
+    }
+
     function restartGame() {
         const restartDialog = document.createElement("dialog");
         restartDialog.style.padding = "20px";
@@ -217,6 +259,7 @@
     function create() {
         //currentCameraY = this.cameras.main.scrollY;
         // Create custom boundaries - left, right, and bottom only
+        showPlayernameModal()
         const boundaryThickness = 50;
         
         const leftWall = this.matter.add.rectangle(-25, 0, boundaryThickness, 20000, { 
@@ -291,7 +334,7 @@
                 const { bodyA, bodyB } = pair;
                 
                 if (bodyA.isStatic && bodyA.label === 'Rectangle Body' && !bodyB.isStatic) {
-                    saveScore(currentScore);
+                    saveScore(currentScore, playerName);
                     
                     // Pause the game instead of destroying it
                     if (game && game.scene.scenes[0]) {
@@ -343,12 +386,15 @@
         scoreText = this.add.text(16, height - unifiedHeightUnit, 'Score: 0', { 
             fontSize: '32px', 
             fill: '#FFF' 
-        }).setScrollFactor(0);
+        })
+        .setScrollFactor(0)
+        .setDepth(100);
 
         highScoreText = this.add.text(16, height - unifiedHeightUnit + 35, 'Highscore: 0', { 
             fontSize: '32px', 
             fill: '#FFF' 
-        }).setScrollFactor(0);
+        }).setScrollFactor(0)
+        .setDepth(100);
 
         currentScore = 0;
 
