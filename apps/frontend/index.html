@@ -69,7 +69,9 @@
         }
     };
 
-    const game = new Phaser.Game(config);
+    let game;
+
+    game = new Phaser.Game(config);
 
     let currentCameraY = 0;
 
@@ -86,6 +88,19 @@
     let highscore = 0;
 
     let towerBlocks = [];
+
+    function restartGame() {
+        // Reset all game variables to their initial state
+        currentCameraY = 0;
+        time = 0;
+        blockReady = true;
+        latestBlock = false;
+        currentScore = 0;
+        towerBlocks = [];
+        
+        // Create a new game instance with the same config
+        game = new Phaser.Game(config);
+    }
 
     async function getHighscore(){
         try {
@@ -235,7 +250,15 @@
                 
                 if (bodyA.isStatic && bodyA.label === 'Rectangle Body' && !bodyB.isStatic) {
                     saveScore(currentScore);
-                    game.destroy();
+                    
+                    // Properly destroy the current game
+                    if (game) {
+                        game.destroy(true); // true parameter removes canvas
+                    }
+                    
+                    setTimeout(() => {
+                        restartGame();
+                    }, 100); // Reduced timeout for faster restart
                 } 
             });
         });
