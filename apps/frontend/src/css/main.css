@@ -45,6 +45,10 @@ main, nav{
     margin-inline: 5vw;
 }
 
+main {
+    margin-block-start: 2rem;
+}
+
 a{
     backdrop-filter: blur(5px);
     background: rgba(255, 255, 255, 0.7);
@@ -57,6 +61,11 @@ a{
 
 a:hover, a:visited:hover{
     background-color: white;
+}
+
+th{
+    text-align: left;
+    padding-block: 24px;
 }
 
 .block-red{
@@ -87,10 +96,31 @@ a:hover, a:visited:hover{
     z-index: 1000;
 }
 
+.highscore-table{
+    backdrop-filter: blur(5px);
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 4px;
+    border: 2px solid white;
+    color: black;
+    padding: 24px;
+}
+
+.player{
+    padding-inline-end: 30px;
+}
+
+.rank{
+    padding-inline-end: 0px;
+}
+
 .rope{
     height: 15vh;
     margin-block-start: -1vh;
     margin-inline: auto;
+}
+
+.score{
+    text-align: right;
 }
 
 .score-item {
