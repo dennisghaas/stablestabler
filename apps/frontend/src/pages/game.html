@@ -4,42 +4,13 @@
     <meta charset="UTF-8" />
     <title>Stable Stabler</title>
     <script src="https://cdn.jsdelivr.net/npm/phaser@3.11.0/dist/phaser.js"></script>
-    <style>
-      *,
-      *::before,
-      *::after {
-          margin: 0;
-          padding: 0;
-          box-sizing: border-box;
-      }
-
-      html, body {
-          width: 100%;
-          height: 100%;
-      }
-
-      body {
-          font-family: Arial, sans-serif;
-          background-color: white;
-      }
-
-      ol, ul {
-          list-style: none;
-      }
-
-      img, video {
-          max-width: 100%;
-          height: auto;
-          display: block;
-      }
-
-      a {
-          text-decoration: none;
-          color: inherit;
-      }
-  </style>
+    <link rel="stylesheet" href="../css/main.css">
 </head>
 <body>
+    <div class="game-ui">
+        <div class="score-item" id="current-score">Score: 0</div>
+        <div class="score-item" id="high-score">Highscore: 0</div>
+    </div>
 
 <script type="text/javascript">
     const width = window.innerWidth;
@@ -76,7 +47,9 @@
 
     let game;
 
-    game = new Phaser.Game(config);
+    document.fonts.ready.then(() => {
+        game = new Phaser.Game(config);
+    });
 
     let currentCameraY = 0;
 
@@ -96,19 +69,25 @@
 
     let playerName;
 
+    // Get references to the score elements
+    const currentScoreElement = document.getElementById('current-score');
+    const highScoreElement = document.getElementById('high-score');
+
     function showPlayernameModal() {
         const enterNameDialog = document.createElement("dialog");
         enterNameDialog.style.padding = "20px";
-        enterNameDialog.style.border = "2px solid #333";
+        enterNameDialog.style.border = "2px solid white";
         enterNameDialog.style.borderRadius = "10px";
         enterNameDialog.style.margin = "auto";
         enterNameDialog.style.backgroundColor = "white";
         enterNameDialog.style.zIndex = "1000";
+        enterNameDialog.style.fontFamily = "CustomFont";
 
         const enterNameText = document.createElement("h2");
         enterNameText.innerText = "Enter your name";
         enterNameText.style.textAlign = "center";
         enterNameText.style.marginBottom = "10px";
+        enterNameText.style.fontFamily = "CustomFont";
 
         const enterNameField = document.createElement("INPUT");
         enterNameField.setAttribute("type","text");
@@ -116,10 +95,7 @@
         enterNameField.style.textAlign = "center";
         enterNameField.style.display = "block";
         enterNameField.style.margin = "8px auto";
-        enterNameField.addEventListener("click", (event) => {
-            playerName = enterNameField.value
-            enterNameDialog.close();
-        });
+        enterNameField.style.fontFamily = "CustomFont";
         enterNameField.addEventListener("keydown", (event) => {
             if (event.key === 'Enter'){
                 playerName = enterNameField.value
@@ -133,6 +109,7 @@
         enterNameButton.style.fontSize = "16px";
         enterNameButton.style.display = "block";
         enterNameButton.style.margin = "0 auto";
+        enterNameButton.style.fontFamily = "CustomFont";
         enterNameButton.addEventListener("click", (event) => {
             playerName = enterNameField.value
             enterNameDialog.close();
@@ -152,7 +129,7 @@
     function restartGame() {
         const restartDialog = document.createElement("dialog");
         restartDialog.style.padding = "20px";
-        restartDialog.style.border = "2px solid #333";
+        restartDialog.style.border = "2px solid white";
         restartDialog.style.borderRadius = "10px";
         restartDialog.style.margin = "auto";
         restartDialog.style.backgroundColor = "white";
@@ -165,11 +142,15 @@
         const scoreText = document.createElement("p");
         scoreText.innerText = `Your Score: ${currentScore}`;
         scoreText.style.marginBottom = "20px";
+        scoreText.style.fontFamily = "CustomFont";
         
         const restartButton = document.createElement("button");
         restartButton.innerText = "RESTART";
+        restartButton.style.display = "block";
         restartButton.style.padding = "10px 20px";
         restartButton.style.fontSize = "16px";
+        restartButton.style.fontFamily = "CustomFont";
+        restartButton.style.margin = "0 auto";
         restartButton.addEventListener("click", (event) => {
             // Close and remove dialog
             restartDialog.close();
@@ -217,9 +198,8 @@
                             highscore = el.score;
                         }
 
-                        if(highScoreText) {
-                            highScoreText.setText('Highscore: ' + highscore);
-                        }
+                        // Update HTML element instead of Phaser text
+                        highScoreElement.textContent = 'Highscore: ' + highscore;
                     })
                 }
             } else {
@@ -270,8 +250,6 @@
     }
 
     function create() {
-        //currentCameraY = this.cameras.main.scrollY;
-        // Create custom boundaries - left, right, and bottom only
         showPlayernameModal()
         const boundaryThickness = 50;
         
@@ -395,22 +373,10 @@
             });
         });
     
-        // Display UI
-        scoreText = this.add.text(16, height - unifiedHeightUnit, 'Score: 0', { 
-            fontSize: '32px', 
-            fill: '#FFF' 
-        })
-        .setScrollFactor(0)
-        .setDepth(100);
-
-        highScoreText = this.add.text(16, height - unifiedHeightUnit + 35, 'Highscore: 0', { 
-            fontSize: '32px', 
-            fill: '#FFF' 
-        }).setScrollFactor(0)
-        .setDepth(100);
-
+        // Remove the Phaser text creation and replace with:
         currentScore = 0;
-
+        currentScoreElement.textContent = 'Score: 0';
+        
         getHighscore();
     }
 
@@ -459,7 +425,9 @@
                 block.body.label = 'buildingBlock';
                 blockReady = false;
                 currentScore += 1;
-                scoreText.setText('Score: ' + currentScore);
+                
+                // Update the HTML element instead of Phaser text
+                currentScoreElement.textContent = 'Score: ' + currentScore;
             }
         }
     }
