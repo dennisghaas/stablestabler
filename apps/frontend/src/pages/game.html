@@ -22,7 +22,7 @@
         type: Phaser.AUTO,
         width: width,
         height: height,
-        backgroundColor: '#87CEEB',
+        transparent: true,
         physics: {
             default: 'matter',
             matter: {
@@ -250,6 +250,7 @@
     }
 
     function create() {
+        
         showPlayernameModal()
         const boundaryThickness = 50;
         
