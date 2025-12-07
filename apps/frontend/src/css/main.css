@@ -1,0 +1,91 @@
+
+@font-face {
+    font-family: 'CustomFont';
+    src: url('../assets/fonts/PressStart2P-Regular.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    background: linear-gradient(135deg, #87CEEB 0%, #4682B4 100%);
+    display: flex;
+    flex-direction: column;
+    font-family: 'CustomFont';
+    gap: 5vh;
+    height: 100%;
+    overflow: hidden;
+    width: 100%;
+}
+
+header{
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+
+
+main, nav{
+    align-content: center;
+    align-items: center;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    justify-content: center;
+    margin-inline: 5vw;
+}
+
+a{
+    border: 2px solid white;
+    border-radius: 4px;
+    color: white;
+    padding: 8px;
+    text-decoration: none;
+}
+
+a:hover{
+    background-color: white;
+    color: black;
+}
+
+a:visited{
+    color: white;
+}
+
+a:visited:hover{
+    background-color: white;
+    color: black;
+}
+
+.block-red{
+    height: 10vh;
+}
+
+.crane{
+    height: 5vh;
+}
+
+.game-advice{
+    color: rgba(75, 75, 75, 0.377);
+    text-align: center;
+}
+
+.rope{
+    height: 15vh;
+    margin-block-start: -1vh;
+    margin-inline: auto;
+}
+
+.subtitle{
+    text-align: center;
+}
