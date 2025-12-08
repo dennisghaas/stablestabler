@@ -1,6 +1,6 @@
 import { IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { GameMode, Team } from '../enums/highscore.enum';
+import { GameMode, Team } from '../../../../../types/enums/highscore.enum';
 
 export class CreateHighScore {
   @ApiProperty({

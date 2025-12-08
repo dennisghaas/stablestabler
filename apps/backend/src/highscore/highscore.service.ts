@@ -1,6 +1,6 @@
 import { ConflictException, Injectable } from '@nestjs/common';
 import { CreateHighScore } from './dto/highscore.dto';
-import { GameMode } from './enums/highscore.enum';
+import { GameMode } from '../../../../types/enums/highscore.enum';
 import { InjectRepository } from '@nestjs/typeorm';
 import { HighscoreEntity } from './entity/highscore.entity';
 import { Repository } from 'typeorm';
@@ -44,6 +44,20 @@ export class HighscoreService {
     });
   }
 
+  async findHighestByMode(mode: GameMode): Promise<HighscoreEntity | null> {
+    return this.highScoreRepository.findOne({
+      where: { mode },
+      order: { score: 'DESC' },
+    });
+  }
+
+  async findLowestByMode(mode: GameMode): Promise<HighscoreEntity | null> {
+    return this.highScoreRepository.findOne({
+      where: { mode },
+      order: { score: 'ASC' },
+    });
+  }
+
   async removeMany(entries: HighscoreEntity[]): Promise<number> {
     if (!entries.length) {
       return 0;
@@ -51,5 +65,10 @@ export class HighscoreService {
 
     const result = await this.highScoreRepository.remove(entries);
     return result.length;
+  }
+
+  async deleteAll(mode: GameMode) {
+    const findAll = await this.findByMode(mode);
+    await this.highScoreRepository.remove(findAll);
   }
 }

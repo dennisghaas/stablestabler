@@ -9,7 +9,7 @@ import { RoomEntity } from './entity/room.entity';
 import { RoomState } from './enum/room.enum';
 import * as _ from 'lodash';
 import { CreateRoom, JoinGame } from './dto/room.dto';
-import { Team } from '../highscore/enums/highscore.enum';
+import { Team } from '../../../../types/enums/highscore.enum';
 
 @Injectable()
 export class RoomService {

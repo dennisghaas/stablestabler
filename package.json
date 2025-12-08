@@ -3,20 +3,20 @@
   "private": true,
   "workspaces": [
     "apps/backend",
-    "apps/frontend"
+    "apps/frontend",
+    "types"
   ],
   "engines": {
     "node": ">=20.10.0"
   },
   "scripts": {
-    "prepare:fe": "mkdir -p apps/frontend/dist && cp apps/frontend/index.html apps/frontend/dist/index.html",
-    "build": "npm run prepare:fe && npm run build -w apps/backend",
-    "start": "npm run prepare:fe && npm run start -w apps/backend",
-    "start:dev": "concurrently -n FRONTEND,BACKEND -c blue,green \"npm run prepare:fe && cd apps/frontend && node server.js\" \"npm run prepare:fe && npm run start:dev -w apps/backend\"",
-    "start:prod": "npm run start:prod -w apps/backend",
-    "format": "echo \"No frontend: format skipped\"",
-    "lint": "echo \"No frontend: lint skipped\"",
-    "clean": "npm run clean -w apps/backend && rm -rf node_modules"
+    "build": "npm run build -w apps/backend && npm run build -w apps/frontend",
+    "start": "concurrently -n BACKEND,FRONTEND -c blue,magenta \"npm run start -w apps/backend\" \"npm run start -w apps/frontend\"",
+    "start:dev": "concurrently -n BACKEND,FRONTEND -c blue,magenta \"npm run start:dev -w apps/backend\" \"npm run start -w apps/frontend\"",
+    "prod": "npm run start:prod -w apps/backend",
+    "format": "npm run format -w apps/frontend",
+    "lint": "npm run lint -w apps/frontend",
+    "clean": "npm run clean -w apps/frontend && npm run clean -w apps/backend && rm -rf node_modules"
   },
 
   "devDependencies": {

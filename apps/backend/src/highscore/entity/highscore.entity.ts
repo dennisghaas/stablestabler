@@ -4,7 +4,7 @@ import {
   Entity,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { GameMode, Team } from '../enums/highscore.enum';
+import { GameMode, Team } from '../../../../../types/enums/highscore.enum';
 
 @Entity()
 export class HighscoreEntity {

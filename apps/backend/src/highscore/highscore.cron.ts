@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { HighscoreService } from './highscore.service';
-import { GameMode } from './enums/highscore.enum';
+import { GameMode } from '../../../../types/enums/highscore.enum';
 
 @Injectable()
 export class HighscoreCron {
