@@ -1,7 +1,7 @@
 
 @font-face {
     font-family: 'CustomFont';
-    src: url('./fonts/PressStart2P-Regular.woff2') format('woff2');
+    src: url('/fonts/PressStart2P-Regular.woff2') format('woff2');
     font-weight: normal;
     font-style: normal;
 }
@@ -18,7 +18,7 @@ html, body {
     background: linear-gradient(180deg, #87CEEB 0%, #87CEEB 80%, #4682B4 100%);
     display: flex;
     flex-direction: column;
-    font-family: 'CustomFont';
+    font-family: 'CustomFont', sans-serif;
     gap: 5vh;
     height: 100%;
     overflow: hidden;

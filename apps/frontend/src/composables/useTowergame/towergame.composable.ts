@@ -35,7 +35,7 @@ export function useTowerGame() {
       physics: {
         default: 'matter',
         matter: {
-          gravity: { y: 0.8 },
+          gravity: { x: 0, y: 0.8 },
           constraintIterations: 4,
           positionIterations: 8,
           velocityIterations: 6,
@@ -124,7 +124,7 @@ export function useTowerGame() {
         { isStatic: true },
       );
       groundFloor.setScale(unifiedHeightUnit / groundFloor.height);
-      groundFloor.body!.label = 'groundFloor';
+      (groundFloor.body as MatterJS.BodyType).label = 'groundFloor';
 
       // COLLISION HANDLER
       this.matter.world.on('collisionstart', (event: any) => {
@@ -212,7 +212,7 @@ export function useTowerGame() {
           'redBlockTexture',
         );
 
-        block.body!.label = 'buildingBlock';
+        (block.body as MatterJS.BodyType).label = 'buildingBlock';
         block.setScale((height * 0.15) / block.height);
 
         latestBlock = block;

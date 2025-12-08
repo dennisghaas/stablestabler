@@ -7,10 +7,9 @@ import {
   ServeStaticModule,
   ServeStaticModuleOptions,
 } from '@nestjs/serve-static';
-import { join } from 'path';
 import { RoomModule } from './room/room.module';
-import { FrontendController } from './frontend/frontend.controller';
 import { ScheduleModule } from '@nestjs/schedule';
+import { resolveFrontendDistDirHelper } from '@/src/helper';
 
 @Module({
   imports: [
@@ -18,10 +17,9 @@ import { ScheduleModule } from '@nestjs/schedule';
     ScheduleModule.forRoot(),
     ServeStaticModule.forRootAsync({
       inject: [Config],
-      useFactory: (config: Config): ServeStaticModuleOptions[] => [
+      useFactory: (): ServeStaticModuleOptions[] => [
         {
-          rootPath: join(__dirname, '../../frontend', ''),
-          exclude: ['/'],
+          rootPath: resolveFrontendDistDirHelper(),
         },
       ],
     }),
@@ -41,6 +39,6 @@ import { ScheduleModule } from '@nestjs/schedule';
     HighscoreModule,
     // RoomModule,
   ],
-  controllers: [FrontendController],
+  controllers: [],
 })
 export class AppModule {}

@@ -10,14 +10,13 @@
     "node": ">=20.10.0"
   },
   "scripts": {
-    "prepare:fe": "mkdir -p apps/frontend-old/dist && cp apps/frontend-old/index.html apps/frontend-old/dist/index.html",
-    "build": "npm run prepare:fe && npm run build -w apps/backend",
-    "start": "npm run prepare:fe && npm run start -w apps/backend",
+    "build": "npm run build -w apps/backend && npm run build -w apps/frontend",
+    "start": "concurrently -n BACKEND,FRONTEND -c blue,magenta \"npm run start -w apps/backend\" \"npm run start -w apps/frontend\"",
     "start:dev": "concurrently -n BACKEND,FRONTEND -c blue,magenta \"npm run start:dev -w apps/backend\" \"npm run start -w apps/frontend\"",
-    "start:prod": "npm run start:prod -w apps/backend",
-    "format": "echo \"No frontend: format skipped\"",
-    "lint": "echo \"No frontend: lint skipped\"",
-    "clean": "npm run clean -w apps/backend && rm -rf node_modules"
+    "prod": "npm run start:prod -w apps/backend",
+    "format": "npm run format -w apps/frontend",
+    "lint": "npm run lint -w apps/frontend",
+    "clean": "npm run clean -w apps/frontend && npm run clean -w apps/backend && rm -rf node_modules"
   },
 
   "devDependencies": {
