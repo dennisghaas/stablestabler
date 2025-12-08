@@ -16,6 +16,7 @@
     "@vue/eslint-config-typescript": "^14.6.0",
     "axios": "^1.13.2",
     "eslint-plugin-oxlint": "^1.31.0",
+    "phaser": "^3.90.0",
     "pinia": "^3.0.4",
     "pinia-plugin-persistedstate": "^4.7.1",
     "prettier-plugin-organize-imports": "^4.3.0",

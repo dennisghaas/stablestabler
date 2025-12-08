@@ -44,6 +44,20 @@ export class HighscoreService {
     });
   }
 
+  async findHighestByMode(mode: GameMode): Promise<HighscoreEntity | null> {
+    return this.highScoreRepository.findOne({
+      where: { mode },
+      order: { score: 'DESC' },
+    });
+  }
+
+  async findLowestByMode(mode: GameMode): Promise<HighscoreEntity | null> {
+    return this.highScoreRepository.findOne({
+      where: { mode },
+      order: { score: 'ASC' },
+    });
+  }
+
   async removeMany(entries: HighscoreEntity[]): Promise<number> {
     if (!entries.length) {
       return 0;
@@ -51,5 +65,10 @@ export class HighscoreService {
 
     const result = await this.highScoreRepository.remove(entries);
     return result.length;
+  }
+
+  async deleteAll(mode: GameMode) {
+    const findAll = await this.findByMode(mode);
+    await this.highScoreRepository.remove(findAll);
   }
 }

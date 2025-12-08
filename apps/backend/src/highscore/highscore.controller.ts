@@ -2,7 +2,9 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Delete,
   Get,
+  Param,
   Post,
   Query,
 } from '@nestjs/common';
@@ -54,5 +56,52 @@ export class HighscoreController {
     }
 
     return await this.highScoreService.findByMode(mode);
+  }
+
+  @Get('highest')
+  @ApiQuery({
+    name: 'mode',
+    enum: GameMode,
+    description: 'Game mode to filter by highest score in',
+    example: GameMode.SINGLE,
+  })
+  @ApiOkResponse({
+    description: 'Returns highest score for the given mode',
+  })
+  @ApiBadRequestResponse({
+    description: 'If mode is not a valid GameMode enum value',
+  })
+  async findHighestScore(@Query('mode') mode: GameMode) {
+    if (!isValidEnum(mode, GameMode)) {
+      throw new BadRequestException(`Mode "${mode}" does not exist`);
+    }
+
+    return await this.highScoreService.findHighestByMode(mode);
+  }
+
+  @Get('lowest')
+  @ApiQuery({
+    name: 'mode',
+    enum: GameMode,
+    description: 'Game mode to filter by lowest score in',
+    example: GameMode.SINGLE,
+  })
+  @ApiOkResponse({
+    description: 'Returns lowest score for the given mode',
+  })
+  @ApiBadRequestResponse({
+    description: 'If mode is not a valid GameMode enum value',
+  })
+  async findLowestScore(@Query('mode') mode: GameMode) {
+    if (!isValidEnum(mode, GameMode)) {
+      throw new BadRequestException(`Mode "${mode}" does not exist`);
+    }
+
+    return await this.highScoreService.findLowestByMode(mode);
+  }
+
+  @Delete(':mode')
+  async deleteAll(@Param('mode') mode: GameMode) {
+    return await this.highScoreService.deleteAll(mode);
   }
 }

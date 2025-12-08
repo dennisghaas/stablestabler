@@ -106,4 +106,17 @@ const handleClick = () => {
     color: white;
   }
 }
+
+.btn-tertiary {
+  backdrop-filter: blur(5px);
+  background: rgba(255, 255, 255, 0.7);
+  border-color: black;
+  color: black;
+
+  &:hover,
+  &:visited:hover {
+    background-color: white;
+    color: black;
+  }
+}
 </style>

@@ -3,7 +3,6 @@ import type {
   BackendResult,
 } from '@/composables/useBackend/backend.type.ts';
 import { core } from '@/core';
-import { sleep } from '@/helper/utils.helper.ts';
 import { useConfigStore } from '@/stores/config.store.ts';
 import axios, { type Method } from 'axios';
 
@@ -19,8 +18,6 @@ export const useBackend = () => {
 
     try {
       configStore.startLoading(id);
-
-      await sleep(250);
 
       const response = await axios({
         method,

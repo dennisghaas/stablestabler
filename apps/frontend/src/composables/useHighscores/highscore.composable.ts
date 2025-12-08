@@ -1,5 +1,8 @@
 import { useBackend } from '@/composables/useBackend/backend.composable.ts';
-import { HighscoreType } from '@/composables/useHighscores/highscore.type.ts';
+import {
+  CreateScore,
+  HighscoreType,
+} from '@/composables/useHighscores/highscore.type.ts';
 import { ApiResponse } from '@/types/app.type.ts';
 import { GameMode } from '../../../../../types/enums/highscore.enum.ts';
 export const useHighscore = () => {
@@ -22,7 +25,52 @@ export const useHighscore = () => {
     };
   };
 
+  const handleFetchHighestScore = async (
+    mode: GameMode,
+  ): Promise<HighscoreType | undefined> => {
+    const { getBackend } = useBackend();
+    const { error, data } = await getBackend<HighscoreType | null>(
+      `/highscore/highest?mode=${mode}`,
+      { id: 'fetch-scores' },
+    );
+
+    if (error) return undefined;
+    return data ?? undefined;
+  };
+
+  const handleFetchLowestScore = async (
+    mode: GameMode,
+  ): Promise<HighscoreType | undefined> => {
+    const { getBackend } = useBackend();
+    const { error, data } = await getBackend<HighscoreType | null>(
+      `/highscore/lowest?mode=${mode}`,
+      { id: 'fetch-scores' },
+    );
+
+    if (error) return undefined;
+    return data ?? undefined;
+  };
+
+  const handleCreateScore = async (
+    payload: CreateScore,
+  ): Promise<ApiResponse> => {
+    const { postBackend } = useBackend();
+    const { error, data } = await postBackend('/highscore', payload, {
+      id: 'create-score',
+    });
+    if (error || !data) {
+      return { error };
+    }
+
+    return {
+      data,
+    };
+  };
+
   return {
     handleFetchHighscores,
+    handleFetchHighestScore,
+    handleFetchLowestScore,
+    handleCreateScore,
   };
 };

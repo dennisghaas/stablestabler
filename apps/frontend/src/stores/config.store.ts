@@ -3,7 +3,7 @@ import { defineStore } from 'pinia';
 export const useConfigStore = defineStore('config', {
   state: () => ({
     responseLoading: { id: undefined, enabled: false } as ResponseLoading,
-    gameName: '',
+    playerName: '',
   }),
   actions: {
     startLoading(id?: string) {
@@ -18,7 +18,7 @@ export const useConfigStore = defineStore('config', {
   persist: [
     {
       storage: localStorage,
-      pick: ['gameName'],
+      pick: ['playerName'],
     },
   ],
 });

@@ -4,7 +4,7 @@
     <p class="subtitle">Look at these master builders</p>
 
     <LoadingUi id="fetch-highscores">
-      <div id="highscore-list">
+      <div v-if="highscoreList && highscoreList.length > 0" id="highscore-list">
         <table class="highscore-table">
           <thead>
             <tr>
@@ -26,12 +26,33 @@
           </tbody>
         </table>
       </div>
+      <template v-else> Be the first. No scores set yet.</template>
     </LoadingUi>
+
+    <ButtonWrapper centered>
+      <ButtonUi
+        :action="ButtonAction.SAME_SITE"
+        class="btn btn-secondary"
+        :to="{ name: 'Game' }"
+      >
+        Challenge highscores
+      </ButtonUi>
+      <ButtonUi
+        :action="ButtonAction.SAME_SITE"
+        class="btn btn-primary"
+        :to="{ name: 'Home' }"
+      >
+        Back
+      </ButtonUi>
+    </ButtonWrapper>
   </main>
 </template>
 
 <script setup lang="ts">
+import { ButtonAction } from '@/components/Ui/button.type.ts';
+import ButtonUi from '@/components/Ui/ButtonUi.vue';
 import LoadingUi from '@/components/Ui/LoadingUi.vue';
+import ButtonWrapper from '@/components/Utils/ButtonWrapper.vue';
 import { useHighscore } from '@/composables/useHighscores/highscore.composable.ts';
 import { HighscoreType } from '@/composables/useHighscores/highscore.type.ts';
 import { onMounted, ref } from 'vue';

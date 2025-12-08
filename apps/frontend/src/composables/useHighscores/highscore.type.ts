@@ -1,4 +1,4 @@
-import { Team } from '../../../../../types/enums/highscore.enum.ts';
+import { GameMode, Team } from '../../../../../types/enums/highscore.enum.ts';
 
 export type HighscoreType = {
   id: string;
@@ -6,4 +6,11 @@ export type HighscoreType = {
   score: number;
   team: Team;
   createdAt: Date;
+};
+
+export type CreateScore = {
+  player: string;
+  score: number;
+  mode: GameMode;
+  team: Team;
 };
