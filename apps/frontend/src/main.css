@@ -1,7 +1,7 @@
 
 @font-face {
     font-family: 'CustomFont';
-    src: url('../assets/fonts/PressStart2P-Regular.woff2') format('woff2');
+    src: url('./fonts/PressStart2P-Regular.woff2') format('woff2');
     font-weight: normal;
     font-style: normal;
 }
@@ -23,13 +23,19 @@ html, body {
     height: 100%;
     overflow: hidden;
     width: 100%;
+    line-height: 1.5;
 }
 
-header{
+.hero {
     align-items: center;
     display: flex;
     flex-direction: column;
     justify-content: center;
+    padding-bottom: 5vh;
+}
+
+.headline {
+    text-align: center;
 }
 
 
@@ -47,20 +53,6 @@ main, nav{
 
 main {
     margin-block-start: 2rem;
-}
-
-a{
-    backdrop-filter: blur(5px);
-    background: rgba(255, 255, 255, 0.7);
-    border: 2px solid white;
-    border-radius: 4px;
-    color: black;
-    padding: 8px;
-    text-decoration: none;
-}
-
-a:hover, a:visited:hover{
-    background-color: white;
 }
 
 th{
@@ -110,7 +102,7 @@ th{
 }
 
 .rank{
-    padding-inline-end: 0px;
+    padding-inline-end: 0;
 }
 
 .rope{

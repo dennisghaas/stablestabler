@@ -16,7 +16,7 @@ import {
 } from '@nestjs/swagger';
 import { HighscoreService } from './highscore.service';
 import { CreateHighScore } from './dto/highscore.dto';
-import { GameMode } from './enums/highscore.enum';
+import { GameMode } from '../../../../types/enums/highscore.enum';
 import { isValidEnum } from '../helper';
 
 @ApiTags('Highscore')

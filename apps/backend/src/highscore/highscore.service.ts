@@ -1,6 +1,6 @@
 import { ConflictException, Injectable } from '@nestjs/common';
 import { CreateHighScore } from './dto/highscore.dto';
-import { GameMode } from './enums/highscore.enum';
+import { GameMode } from '../../../../types/enums/highscore.enum';
 import { InjectRepository } from '@nestjs/typeorm';
 import { HighscoreEntity } from './entity/highscore.entity';
 import { Repository } from 'typeorm';
